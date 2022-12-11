@@ -39,7 +39,7 @@ int unique(void)
     }
 
     // 打开输入文件
-    if (fopen_s(&in, "all.txt", "r") != 0) {
+    if (fopen_s(&in, "all.text", "r") != 0) {
         printf("Failed to open input file\n");
         free(*lines);
         free(lines);
@@ -47,7 +47,7 @@ int unique(void)
     }
 
     // 创建输出文件
-    if (fopen_s(&out, "unique.txt", "w") != 0) {
+    if (fopen_s(&out, "unique.text", "w") != 0) {
         printf("Failed to create output file\n");
         free(*lines);
         free(lines);

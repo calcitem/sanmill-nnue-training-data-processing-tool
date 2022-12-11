@@ -24,7 +24,7 @@ int merge(void)
     }
 
     // 创建输出文件
-    if (fopen_s(&out, "all.txt", "w") != 0) {
+    if (fopen_s(&out, "all.text", "w") != 0) {
         printf("Failed to create output file\n");
         return 1;
     }
