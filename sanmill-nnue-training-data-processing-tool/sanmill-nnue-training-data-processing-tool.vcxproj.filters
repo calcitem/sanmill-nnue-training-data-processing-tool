@@ -21,8 +21,16 @@
     <ClCompile Include="merge.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="slice.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

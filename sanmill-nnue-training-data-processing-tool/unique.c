@@ -3,8 +3,8 @@
 #include <string.h>
 #include <windows.h>
 
-#define MAX_LINE_LENGTH 80
-#define MAX_LINES (200 * 100000)
+#include "config.h"
+
 
 // 定义缓冲区
 static char buffer[MAX_LINE_LENGTH];
@@ -18,7 +18,7 @@ int unique(void)
     static char** lines;
 
     // 定义行数
-    int numLines = 0;
+    size_t numLines = 0;
 
     // 为所有行分配内存
     lines = (char**)malloc(MAX_LINES * sizeof(char*));
@@ -34,7 +34,7 @@ int unique(void)
         return 1;
     }
 
-    for (int i = 0; i < MAX_LINES; i++) {
+    for (size_t i = 0; i < MAX_LINES; i++) {
         lines[i] = (*lines) + i * MAX_LINE_LENGTH;
     }
 
