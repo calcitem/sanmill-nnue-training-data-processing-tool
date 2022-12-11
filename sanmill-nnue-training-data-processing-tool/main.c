@@ -28,7 +28,7 @@ void runAndTime(void (*func)(void))
     int seconds = (int)((timeElapsed % 60000) / 1000);
 
     // 输出耗时
-    printf("%s() took %d minutes and %d seconds to run\n", funcName, minutes, seconds);
+    printf("%s() took %lld ms (%dmin %ds) to run\n", funcName, timeElapsed, minutes, seconds);
 }
 
 int main()
