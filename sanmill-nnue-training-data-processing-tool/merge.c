@@ -2,13 +2,7 @@
 #include <string.h>
 #include <windows.h>
 
-#define MAX_LINE_LENGTH 80
-#define MAX_LINES 1000000
-
-// 定义缓冲区
-static char buffer[MAX_LINE_LENGTH];
-
-int mergeFiles(void)
+int merge(void)
 {
     // 定义文件指针
     FILE *in, *out;
@@ -83,59 +77,6 @@ int mergeFiles(void)
     FindClose(hFind);
 
     // 关闭输出文件
-    fclose(out);
-
-    return 0;
-}
-
-int unique(void)
-{
-    // 定义文件指针
-    FILE *in, *out;
-
-    // 定义行数组
-    static char lines[MAX_LINES][MAX_LINE_LENGTH];
-
-    // 定义行数
-    int numLines = 0;
-
-    // 打开输入文件
-    if (fopen_s(&in, "all.txt", "r") != 0) {
-        printf("Failed to open input file\n");
-        return 1;
-    }
-
-    // 创建输出文件
-    if (fopen_s(&out, "unique.txt", "w") != 0) {
-        printf("Failed to create output file\n");
-        return 1;
-    }
-
-    // 读取每一行
-    while (fgets(buffer, sizeof(buffer), in) != NULL) {
-        // 去掉换行符
-        buffer[strcspn(buffer, "\r\n")] = '\0';
-        // 如果当前行是空行，或者与之前的行不同，则将其写入行数组
-        if (buffer[0] == '\0' || strcmp(buffer, lines[numLines]) != 0) {
-            // 如果行数组已满，则退出循环
-            if (numLines >= MAX_LINES) {
-                break;
-            }
-
-            // 将当前行存储到行数组
-            strcpy_s(lines[numLines], sizeof(lines[numLines]), buffer);
-            numLines++;
-        }
-    }
-
-    // 将行数组中的每一行写入输出文件
-    for (int i = 0; i < numLines; i++) {
-        fputs(lines[i], out);
-        fputc('\n', out);
-    }
-
-    // 关闭文件
-    fclose(in);
     fclose(out);
 
     return 0;
