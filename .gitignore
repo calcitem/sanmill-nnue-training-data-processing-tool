@@ -389,6 +389,7 @@ local.properties
 
 # Text files
 *.txt
+*.text
 !fastlane/**/*.txt
 !CMakeLists.txt
 
