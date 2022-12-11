@@ -14,16 +14,14 @@ int main(void)
     // 定义文件指针
     FILE *in, *out;
 
-    // 定义行数组
-    static char* lines[MAX_LINES];
+    // 定义行指针
+    static char* lines;
 
     // 定义行数
     int numLines = 0;
 
-    // 为每一行分配内存
-    for (int i = 0; i < MAX_LINES; i++) {
-        lines[i] = (char*)malloc(MAX_LINE_LENGTH);
-    }
+    // 为所有行分配内存
+    lines = (char*)malloc(MAX_LINES * MAX_LINE_LENGTH);
 
     // 打开输入文件
     if (fopen_s(&in, "all.txt", "r") != 0) {
@@ -42,28 +40,27 @@ int main(void)
         // 去掉换行符
         buffer[strcspn(buffer, "\r\n")] = '\0';
 
-        // 如果当前行是空行，或者与之前的行不同，则将其写入行数组
-        if (buffer[0] == '\0' || strcmp(buffer, lines[numLines]) != 0) {
-            // 如果行数组已满，则退出循环
+        // 如果当前行是空行，或者与之前的行不同，则将其写入行指针
+        if (buffer[0] == '\0' || strcmp(buffer, lines + numLines * MAX_LINE_LENGTH) != 0) {
+            // 如果行指针指向的内存已满，则退出循环
             if (numLines >= MAX_LINES) {
                 break;
             }
 
-            // 将当前行存储到行数组
-            strcpy_s(lines[numLines], MAX_LINE_LENGTH, buffer);
+            // 将当前行存储到行指针
+            strcpy_s(lines + numLines * MAX_LINE_LENGTH, MAX_LINE_LENGTH, buffer);
             numLines++;
         }
     }
 
-    // 将行数组中的每一行写入输出文件
+    // 将行指针指向的内存中的每一行写入输出文件
     for (int i = 0; i < numLines; i++) {
-        fputs(lines[i], out);
+        fputs(lines + i * MAX_LINE_LENGTH, out);
         fputc('\n', out);
     }
+
     // 释放内存
-    for (int i = 0; i < MAX_LINES; i++) {
-        free(lines[i]);
-    }
+    free(lines);
 
     // 关闭文件
     fclose(in);
