@@ -63,7 +63,8 @@ int unique(void)
         BOOL isDuplicate = FALSE;
         for (int i = 0; i < numLines; i++) {
             // 如果当前行和之前的行相同，则设置标记
-            if (strcmp(buffer, lines[i]) == 0) {
+            if (strncmp(buffer + 55, lines[i] + 55, 2) == 0 && /* 先比较着法序号附近 */
+                strcmp(buffer, lines[i]) == 0 /* 再完整比较 */) {
                 isDuplicate = TRUE;
                 break;
             }
