@@ -78,5 +78,21 @@ int main(void)
     }
     fclose(in);
 
+    // 删除最后一个文件，如果它是空文件
+    if (fileNum > 0) {
+        char fileName[MAX_LINE_LENGTH];
+        sprintf_s(fileName, MAX_LINE_LENGTH, "cleaned\\%d.txt", fileNum);
+
+        // 检查最后一个文件是否为空
+        FILE* lastFile = NULL;
+        if (fopen_s(&lastFile, fileName, "r") == 0) {
+            if (fgets(buffer, sizeof(buffer), lastFile) == NULL) {
+                // 如果最后一个文件是空文件，则删除它
+                fclose(lastFile);
+                remove(fileName);
+            }
+        }
+    }
+
     return 0;
 }
