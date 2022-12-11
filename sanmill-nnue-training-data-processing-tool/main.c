@@ -22,7 +22,18 @@ int main(void)
 
     // 为所有行分配内存
     lines = (char**)malloc(MAX_LINES * sizeof(char*));
+    if (lines == NULL) {
+        printf("Failed to allocate memory for lines\n");
+        return 1;
+    }
+
     *lines = (char*)malloc(MAX_LINES * MAX_LINE_LENGTH);
+    if (*lines == NULL) {
+        printf("Failed to allocate memory for lines\n");
+        free(lines);
+        return 1;
+    }
+
     for (int i = 0; i < MAX_LINES; i++) {
         lines[i] = (*lines) + i * MAX_LINE_LENGTH;
     }
@@ -30,12 +41,16 @@ int main(void)
     // 打开输入文件
     if (fopen_s(&in, "all.txt", "r") != 0) {
         printf("Failed to open input file\n");
+        free(*lines);
+        free(lines);
         return 1;
     }
 
     // 创建输出文件
     if (fopen_s(&out, "unique.txt", "w") != 0) {
         printf("Failed to create output file\n");
+        free(*lines);
+        free(lines);
         return 1;
     }
 
@@ -56,31 +71,68 @@ int main(void)
 
         // 如果当前行是空行，或者与之前的行不同，则将其写入行指针
         if (buffer[0] == '\0' || !isDuplicate) {
+            // 如果行指针为 NULL，则退出程序
+            if (lines == NULL) {
+                printf("Failed to allocate memory for lines\n");
+                fclose(in);
+                fclose(out);
+                return 1;
+            }
+
             // 如果行指针指向的内存已满，则退出循环
             if (numLines >= MAX_LINES) {
                 break;
             }
 
-            // 将当前行存储到行指针
-            strcpy_s(lines[numLines], MAX_LINE_LENGTH, buffer);
-            numLines++;
+            // 如果当前行为空行，则将其写入行指针
+            if (buffer[0] == '\0') {
+                // 将当前行存储到行指针
+                strcpy_s(lines[numLines], MAX_LINE_LENGTH, buffer);
+                numLines++;
+            } else {
+                // 判断当前行是否重复
+                int isDuplicate = 0;
+                for (int i = 0; i < numLines; i++) {
+                    // 如果当前行和之前的行相同，则设置标记
+                    if (strcmp(buffer, lines[i]) == 0) {
+                        isDuplicate = 1;
+                        break;
+                    }
+                }
+
+                // 如果当前行与之前的行不同，则将其写入行指针
+                if (!isDuplicate) {
+                    // 将当前行存储到行指针
+                    strcpy_s(lines[numLines], MAX_LINE_LENGTH, buffer);
+                    numLines++;
+                }
+            }
         }
+
+        // 将行指针指向的内存中的每一行写入输出文件
+        for (int i = 0; i < numLines; i++) {
+            // 如果行指针为 NULL，则退出程序
+            if (lines == NULL) {
+                printf("Failed to allocate memory for lines\n");
+                fclose(in);
+                fclose(out);
+                return 1;
+            }
+
+            fputs(lines[i], out);
+            fputc('\n', out);
+        }
+
+        // 释放内存
+        if (lines != NULL && *lines != NULL) {
+            free(*lines);
+            free(lines);
+        }
+
+        // 关闭文件
+        fclose(in);
+        fclose(out);
+
+        return 0;
     }
-
-    // 将行指针指向的内存中的每一行写入输出文件
-
-    for (int i = 0; i < numLines; i++) {
-        fputs(lines[i], out);
-        fputc('\n', out);
-    }
-
-    // 释放内存
-    free(*lines);
-    free(lines);
-
-    // 关闭文件
-    fclose(in);
-    fclose(out);
-
-    return 0;
 }
