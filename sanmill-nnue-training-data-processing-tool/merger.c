@@ -1,82 +1,88 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <string.h>
 #include <windows.h>
 
+#define MAX_LINE_LENGTH 80
+#define MAX_LINES 1000000
+
+// å®šä¹‰ç¼“å†²åŒº
+static char buffer[MAX_LINE_LENGTH];
+
 int mergeFiles(void)
 {
-    // ¶¨ÒåÎÄ¼şÖ¸Õë
+    // å®šä¹‰æ–‡ä»¶æŒ‡é’ˆ
     FILE *in, *out;
 
-    // ¶¨ÒåÄ¿Â¼²éÑ¯¾ä±úºÍÎÄ¼şĞÅÏ¢½á¹¹Ìå
+    // å®šä¹‰ç›®å½•æŸ¥è¯¢å¥æŸ„å’Œæ–‡ä»¶ä¿¡æ¯ç»“æ„ä½“
     HANDLE hFind;
     WIN32_FIND_DATAA fileInfo;
 
-    // ¶¨ÒåÄ¿Â¼²éÑ¯Ä£°å
+    // å®šä¹‰ç›®å½•æŸ¥è¯¢æ¨¡æ¿
     char fileTemplate[] = "*.txt";
 
-    // ²éÑ¯±¾Ä¿Â¼ÏÂËùÓĞ .txt ÎÄ¼ş
+    // æŸ¥è¯¢æœ¬ç›®å½•ä¸‹æ‰€æœ‰ .txt æ–‡ä»¶
     hFind = FindFirstFileA(fileTemplate, &fileInfo);
 
-    // ÅĞ¶ÏÊÇ·ñÕÒµ½ÁËÎÄ¼ş
+    // åˆ¤æ–­æ˜¯å¦æ‰¾åˆ°äº†æ–‡ä»¶
     if (hFind == INVALID_HANDLE_VALUE) {
         printf("No files found\n");
         return 1;
     }
 
-    // ´´½¨Êä³öÎÄ¼ş
+    // åˆ›å»ºè¾“å‡ºæ–‡ä»¶
     if (fopen_s(&out, "all.txt", "w") != 0) {
         printf("Failed to create output file\n");
         return 1;
     }
 
-    // ²éÑ¯µ½µÄÎÄ¼ş²»ÊÇ "." »ò ".."
+    // æŸ¥è¯¢åˆ°çš„æ–‡ä»¶ä¸æ˜¯ "." æˆ– ".."
     if (strcmp(fileInfo.cFileName, ".") != 0 && strcmp(fileInfo.cFileName, "..") != 0) {
-        // ´ò¿ª¸ÃÎÄ¼ş
+        // æ‰“å¼€è¯¥æ–‡ä»¶
         if (fopen_s(&in, fileInfo.cFileName, "r") != 0) {
             printf("Failed to open file: %s\n", fileInfo.cFileName);
             return 1;
         }
 
-        // ½«¸ÃÎÄ¼şµÄÄÚÈİĞ´ÈëÊä³öÎÄ¼ş
+        // å°†è¯¥æ–‡ä»¶çš„å†…å®¹å†™å…¥è¾“å‡ºæ–‡ä»¶
         char c;
         while ((c = fgetc(in)) != EOF) {
             fputc(c, out);
         }
-        // ¿ÕÒ»ĞĞ
+        // ç©ºä¸€è¡Œ
         fputc('\n', out);
 
-        // ¹Ø±Õ¸ÃÎÄ¼ş
+        // å…³é—­è¯¥æ–‡ä»¶
         fclose(in);
     }
 
-    // ²éÕÒÏÂÒ»¸öÎÄ¼ş
+    // æŸ¥æ‰¾ä¸‹ä¸€ä¸ªæ–‡ä»¶
     while (FindNextFileA(hFind, &fileInfo)) {
-        // ²éÑ¯µ½µÄÎÄ¼ş²»ÊÇ "." »ò ".."
+        // æŸ¥è¯¢åˆ°çš„æ–‡ä»¶ä¸æ˜¯ "." æˆ– ".."
         if (strcmp(fileInfo.cFileName, ".") != 0 && strcmp(fileInfo.cFileName, "..") != 0) {
-            // ´ò¿ª¸ÃÎÄ¼ş
+            // æ‰“å¼€è¯¥æ–‡ä»¶
             if (fopen_s(&in, fileInfo.cFileName, "r") != 0) {
                 printf("Failed to open file: %s\n", fileInfo.cFileName);
                 return 1;
             }
 
-            // ½«¸ÃÎÄ¼şµÄÄÚÈİĞ´ÈëÊä³öÎÄ¼ş
+            // å°†è¯¥æ–‡ä»¶çš„å†…å®¹å†™å…¥è¾“å‡ºæ–‡ä»¶
             char c;
             while ((c = fgetc(in)) != EOF) {
                 fputc(c, out);
             }
 
-            // ¿ÕÒ»ĞĞ
+            // ç©ºä¸€è¡Œ
             fputc('\n', out);
 
-            // ¹Ø±Õ¸ÃÎÄ¼ş
+            // å…³é—­è¯¥æ–‡ä»¶
             fclose(in);
         }
     }
 
-    // ¹Ø±ÕÄ¿Â¼²éÑ¯¾ä±ú
+    // å…³é—­ç›®å½•æŸ¥è¯¢å¥æŸ„
     FindClose(hFind);
 
-    // ¹Ø±ÕÊä³öÎÄ¼ş
+    // å…³é—­è¾“å‡ºæ–‡ä»¶
     fclose(out);
 
     return 0;
@@ -84,51 +90,51 @@ int mergeFiles(void)
 
 int unique(void)
 {
-    // ¶¨ÒåÎÄ¼şÖ¸Õë
+    // å®šä¹‰æ–‡ä»¶æŒ‡é’ˆ
     FILE *in, *out;
 
-    // ¶¨ÒåĞĞÊı×é
+    // å®šä¹‰è¡Œæ•°ç»„
     static char lines[MAX_LINES][MAX_LINE_LENGTH];
 
-    // ¶¨ÒåĞĞÊı
+    // å®šä¹‰è¡Œæ•°
     int numLines = 0;
 
-    // ´ò¿ªÊäÈëÎÄ¼ş
+    // æ‰“å¼€è¾“å…¥æ–‡ä»¶
     if (fopen_s(&in, "all.txt", "r") != 0) {
         printf("Failed to open input file\n");
         return 1;
     }
 
-    // ´´½¨Êä³öÎÄ¼ş
+    // åˆ›å»ºè¾“å‡ºæ–‡ä»¶
     if (fopen_s(&out, "unique.txt", "w") != 0) {
         printf("Failed to create output file\n");
         return 1;
     }
 
-    // ¶ÁÈ¡Ã¿Ò»ĞĞ
+    // è¯»å–æ¯ä¸€è¡Œ
     while (fgets(buffer, sizeof(buffer), in) != NULL) {
-        // È¥µô»»ĞĞ·û
+        // å»æ‰æ¢è¡Œç¬¦
         buffer[strcspn(buffer, "\r\n")] = '\0';
-        // Èç¹ûµ±Ç°ĞĞÊÇ¿ÕĞĞ£¬»òÕßÓëÖ®Ç°µÄĞĞ²»Í¬£¬Ôò½«ÆäĞ´ÈëĞĞÊı×é
+        // å¦‚æœå½“å‰è¡Œæ˜¯ç©ºè¡Œï¼Œæˆ–è€…ä¸ä¹‹å‰çš„è¡Œä¸åŒï¼Œåˆ™å°†å…¶å†™å…¥è¡Œæ•°ç»„
         if (buffer[0] == '\0' || strcmp(buffer, lines[numLines]) != 0) {
-            // Èç¹ûĞĞÊı×éÒÑÂú£¬ÔòÍË³öÑ­»·
+            // å¦‚æœè¡Œæ•°ç»„å·²æ»¡ï¼Œåˆ™é€€å‡ºå¾ªç¯
             if (numLines >= MAX_LINES) {
                 break;
             }
 
-            // ½«µ±Ç°ĞĞ´æ´¢µ½ĞĞÊı×é
+            // å°†å½“å‰è¡Œå­˜å‚¨åˆ°è¡Œæ•°ç»„
             strcpy_s(lines[numLines], sizeof(lines[numLines]), buffer);
             numLines++;
         }
     }
 
-    // ½«ĞĞÊı×éÖĞµÄÃ¿Ò»ĞĞĞ´ÈëÊä³öÎÄ¼ş
+    // å°†è¡Œæ•°ç»„ä¸­çš„æ¯ä¸€è¡Œå†™å…¥è¾“å‡ºæ–‡ä»¶
     for (int i = 0; i < numLines; i++) {
         fputs(lines[i], out);
         fputc('\n', out);
     }
 
-    // ¹Ø±ÕÎÄ¼ş
+    // å…³é—­æ–‡ä»¶
     fclose(in);
     fclose(out);
 

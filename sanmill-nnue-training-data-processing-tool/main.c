@@ -22,8 +22,9 @@ int main(void)
 
     // 为所有行分配内存
     lines = (char**)malloc(MAX_LINES * sizeof(char*));
+    *lines = (char*)malloc(MAX_LINES * MAX_LINE_LENGTH);
     for (int i = 0; i < MAX_LINES; i++) {
-        lines[i] = (char*)malloc(MAX_LINE_LENGTH);
+        lines[i] = (*lines) + i * MAX_LINE_LENGTH;
     }
 
     // 打开输入文件
@@ -67,15 +68,14 @@ int main(void)
     }
 
     // 将行指针指向的内存中的每一行写入输出文件
+
     for (int i = 0; i < numLines; i++) {
         fputs(lines[i], out);
         fputc('\n', out);
     }
 
     // 释放内存
-    for (int i = 0; i < MAX_LINES; i++) {
-        free(lines[i]);
-    }
+    free(*lines);
     free(lines);
 
     // 关闭文件
