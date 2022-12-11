@@ -1,50 +1,50 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
 
-// ¶¨Òå»º³åÇø´óĞ¡
+// å®šä¹‰ç¼“å†²åŒºå¤§å°
 #define MAX_LINE_LENGTH 80
 
 /*
- * ¸Ã³ÌĞò»á¶ÁÈ¡±¾Ä¿Â¼ÏÂµÄ unique.text ÎÄ¼ş£¬Ê¶±ğ³ö¿ÕĞĞ£¬°´¿ÕĞĞ·Ö¸îÎÄ¼ş¡£
- * È»ºó£¬ÔÚ±¾Ä¿Â¼ÏÂ´´½¨Ò»¸öÃûÎª cleaned µÄÄ¿Â¼£¬½«·Ö¸îºÃµÄÎÄ¼ş±£´æÔÚÕâ¸öÄ¿Â¼ÏÂ¡£
- * ÎÄ¼şÃû°´Êı×Ö´Ó1¿ªÊ¼µİÔö£¬ºó×ºÊÇ .txt¡£ 
+ * è¯¥ç¨‹åºä¼šè¯»å–æœ¬ç›®å½•ä¸‹çš„ unique.text æ–‡ä»¶ï¼Œè¯†åˆ«å‡ºç©ºè¡Œï¼ŒæŒ‰ç©ºè¡Œåˆ†å‰²æ–‡ä»¶ã€‚
+ * ç„¶åï¼Œåœ¨æœ¬ç›®å½•ä¸‹åˆ›å»ºä¸€ä¸ªåä¸º cleaned çš„ç›®å½•ï¼Œå°†åˆ†å‰²å¥½çš„æ–‡ä»¶ä¿å­˜åœ¨è¿™ä¸ªç›®å½•ä¸‹ã€‚
+ * æ–‡ä»¶åæŒ‰æ•°å­—ä»1å¼€å§‹é€’å¢ï¼Œåç¼€æ˜¯ .txtã€‚ 
  */
 
 int main(void)
 {
-    // ¶¨ÒåÎÄ¼şÖ¸Õë
+    // å®šä¹‰æ–‡ä»¶æŒ‡é’ˆ
     FILE *in = NULL, *out = NULL;
 
-    // ¶¨Òå»º³åÇø
+    // å®šä¹‰ç¼“å†²åŒº
     static char buffer[MAX_LINE_LENGTH];
 
-    // ´ò¿ªÊäÈëÎÄ¼ş
+    // æ‰“å¼€è¾“å…¥æ–‡ä»¶
     if (fopen_s(&in, "unique.text", "r") != 0) {
         printf("Failed to open input file\n");
         return 1;
     }
 
-    // ´´½¨Ä¿Â¼
+    // åˆ›å»ºç›®å½•
     CreateDirectory(L"cleaned", NULL);
 
-    // ¶ÁÈ¡Ã¿Ò»ĞĞ
+    // è¯»å–æ¯ä¸€è¡Œ
     int fileNum = 0;
     while (fgets(buffer, sizeof(buffer), in) != NULL) {
-        // È¥µô»»ĞĞ·û
+        // å»æ‰æ¢è¡Œç¬¦
         buffer[strcspn(buffer, "\r\n")] = '\0';
 
-        // Èç¹ûµ±Ç°ĞĞÎª¿ÕĞĞ£¬Ôò´ò¿ªĞÂÎÄ¼ş
+        // å¦‚æœå½“å‰è¡Œä¸ºç©ºè¡Œï¼Œåˆ™æ‰“å¼€æ–°æ–‡ä»¶
         if (buffer[0] == '\0') {
             fileNum++;
 
-            // ¹Ø±Õµ±Ç°ÎÄ¼ş
+            // å…³é—­å½“å‰æ–‡ä»¶
             if (out != NULL) {
                 fclose(out);
             }
 
-            // ´ò¿ªĞÂÎÄ¼ş
+            // æ‰“å¼€æ–°æ–‡ä»¶
             char fileName[MAX_LINE_LENGTH];
             sprintf_s(fileName, MAX_LINE_LENGTH, "cleaned\\%d.txt", fileNum);
             if (fopen_s(&out, fileName, "w") != 0) {
@@ -53,11 +53,11 @@ int main(void)
                 return 1;
             }
         } else {
-            // Èç¹ûÊä³öÎÄ¼şÎ´´ò¿ª£¬Ôò´ò¿ªĞÂÎÄ¼ş¡£
+            // å¦‚æœè¾“å‡ºæ–‡ä»¶æœªæ‰“å¼€ï¼Œåˆ™æ‰“å¼€æ–°æ–‡ä»¶ã€‚
             if (out == NULL) {
                 fileNum++;
 
-                // ´ò¿ªĞÂÎÄ¼ş
+                // æ‰“å¼€æ–°æ–‡ä»¶
                 char fileName[MAX_LINE_LENGTH];
                 sprintf_s(fileName, MAX_LINE_LENGTH, "cleaned\\%d.txt", fileNum);
                 if (fopen_s(&out, fileName, "w") != 0) {
@@ -67,27 +67,27 @@ int main(void)
                 }
             }
 
-            // ½«µ±Ç°ĞĞĞ´ÈëÎÄ¼ş
+            // å°†å½“å‰è¡Œå†™å…¥æ–‡ä»¶
             fprintf(out, "%s\n", buffer);
         }
     }
 
-    // ¹Ø±ÕËùÓĞÎÄ¼ş
+    // å…³é—­æ‰€æœ‰æ–‡ä»¶
     if (out != NULL) {
         fclose(out);
     }
     fclose(in);
 
-    // É¾³ı×îºóÒ»¸öÎÄ¼ş£¬Èç¹ûËüÊÇ¿ÕÎÄ¼ş
+    // åˆ é™¤æœ€åä¸€ä¸ªæ–‡ä»¶ï¼Œå¦‚æœå®ƒæ˜¯ç©ºæ–‡ä»¶
     if (fileNum > 0) {
         char fileName[MAX_LINE_LENGTH];
         sprintf_s(fileName, MAX_LINE_LENGTH, "cleaned\\%d.txt", fileNum);
 
-        // ¼ì²é×îºóÒ»¸öÎÄ¼şÊÇ·ñÎª¿Õ
+        // æ£€æŸ¥æœ€åä¸€ä¸ªæ–‡ä»¶æ˜¯å¦ä¸ºç©º
         FILE* lastFile = NULL;
         if (fopen_s(&lastFile, fileName, "r") == 0) {
             if (fgets(buffer, sizeof(buffer), lastFile) == NULL) {
-                // Èç¹û×îºóÒ»¸öÎÄ¼şÊÇ¿ÕÎÄ¼ş£¬ÔòÉ¾³ıËü
+                // å¦‚æœæœ€åä¸€ä¸ªæ–‡ä»¶æ˜¯ç©ºæ–‡ä»¶ï¼Œåˆ™åˆ é™¤å®ƒ
                 fclose(lastFile);
                 remove(fileName);
             }
