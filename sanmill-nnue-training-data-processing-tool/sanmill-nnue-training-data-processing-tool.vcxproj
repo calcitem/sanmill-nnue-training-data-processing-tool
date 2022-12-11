@@ -131,6 +131,7 @@
     <ClCompile Include="slice.c" />
     <ClCompile Include="unique.c" />
     <ClCompile Include="merge.c" />
+    <ClCompile Include="unique2.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config.h" />

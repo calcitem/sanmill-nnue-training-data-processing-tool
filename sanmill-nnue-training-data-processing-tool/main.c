@@ -7,6 +7,7 @@
 
 int merge(void);
 int unique(void);
+int unique2(void);
 int slice(void);
 
 void runAndTime(void (*func)(void))
